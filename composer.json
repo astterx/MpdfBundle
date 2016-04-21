@@ -1,36 +1,37 @@
 {
-  "name" : "vel/mpdf-bundle",
-  "description" : "A wrapper for mPDF which allows to use mPDF in Symfony 2.3|~3.0 projects",
-  "type" : "symfony-bundle",
-  "authors" : [{
-    "name" : "Sandu Velea",
-    "email" : "s.velea@yahoo.com"
-  }
+  "name": "vel/mpdf-bundle",
+  "description": "A wrapper for mPDF which allows to use mPDF in Symfony 2.3|~3.0 projects",
+  "type": "symfony-bundle",
+  "authors": [
+    {
+      "name": "Sandu Velea",
+      "email": "s.velea@yahoo.com"
+    }
   ],
-  "keywords" : [
+  "keywords": [
     "mPDF",
     "PDF"
   ],
-  "homepage" : "https://github.com/astterx/Vel.git",
-  "license" : [
+  "homepage": "https://github.com/astterx/Vel.git",
+  "license": [
     "MIT"
   ],
-  "require" : {
-    "mpdf/mpdf" : "6.0.*",
-    "symfony/framework-bundle" : "~2.3|~3.0"
+  "require": {
+    "mpdf/mpdf": "6.0.*",
+    "symfony/framework-bundle": "~2.3|~3.0"
   },
-  "require-dev" : {
-    "symfony/class-loader" : "*",
+  "require-dev": {
+    "symfony/class-loader": "*",
   },
-  "autoload" : {
-    "psr-0" : {
-      "Vel\\MpdfBundle" : ""
+  "autoload": {
+    "psr-0": {
+      "Vel\\MpdfBundle": ""
     }
   },
-  "target-dir" : "Vel/MpdfBundle",
-  "extra" : {
-    "branch-alias" : {
-      "dev-master" : "1.0-dev"
+  "target-dir": "Vel/MpdfBundle",
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0-dev"
     }
   }
 }
