@@ -21,7 +21,7 @@
     "symfony/framework-bundle": "~2.3|~3.0"
   },
   "require-dev": {
-    "symfony/class-loader": "*",
+    "symfony/class-loader": "*"
   },
   "autoload": {
     "psr-0": {
