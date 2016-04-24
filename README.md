@@ -56,3 +56,10 @@ $html = '<h2>Hello world</h2>';
 $mpdfService->generatePDFResponseFromHTML($html)
 ```
 By default the bundle add 'utf-8' to mPDF constructor class.
+
+#### Get an instance of \mPDF class
+If you would like to work with mPDF class itself, you can use a getMpdf method:
+```
+$mpdfService = $this->get('vel.mpdf');
+$mPDF = $mpdfService->getMpdf();
+```
