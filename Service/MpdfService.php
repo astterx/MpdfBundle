@@ -2,135 +2,159 @@
 
 namespace Vel\MpdfBundle\Service;
 
+use Symfony\Component\HttpFoundation\Response;
+
 class MpdfService
 {
     private $mpdf;
 
-    private $format = 'A4';
-
-    private $fontSize = 0;
-
-    private $marginLeft = 15;
-
-    private $marginRight = 15;
-
-    private $marginTop = 16;
-
-    private $marginBottom = 16;
-
-    private $marginHeader = 9;
-
-    private $marginFooter = 9;
-
-    private $orientation = 'P';
-
     /**
-     * Sets a predefined page size or an array of width and height
+     * MpdfService constructor.
      *
-     * @param $format
+     * $mpdf = new mPDF(
+     * '',  mode - default ''
+     * '',  format - A4, for example, default ''
+     * 0,   font size - default 0
+     * '',  default font family
+     * 15,  margin_left
+     * 15,  margin right
+     * 16,  margin top
+     * 16,  margin bottom
+     * 9,   margin header
+     * 9,   margin footer
+     * 'L'  L - landscape, P - portrait
+     * );
+     *
+     *
+     * @param string $format
+     * @param int    $fontSize
+     * @param string $fontFamily
+     * @param int    $marginLeft
+     * @param int    $marginRight
+     * @param int    $marginTop
+     * @param int    $marginBottom
+     * @param int    $marginHeader
+     * @param int    $marginFooter
+     * @param string $orientation
      */
-    public function setFormat($format)
+
+    public function __construct(
+        $format = 'A4',
+        $fontSize = 0,
+        $fontFamily = '',
+        $marginLeft = 15,
+        $marginRight = 15,
+        $marginTop = 16,
+        $marginBottom = 16,
+        $marginHeader = 9,
+        $marginFooter = 9,
+        $orientation = 'P'
+    )
     {
-        if ((is_array($format) && count($format) == 2) || in_array(strtoupper($format), $this->getAcceptedFormats())) {
-            $this->format = $format;
+        if (!(is_array($format) && count($format) == 2) || !in_array(strtoupper($format), $this->getAcceptedFormats())) {
+            $format = 'A4';
         }
+
+        $constructorArgs = array(
+            'utf-8',
+            $this->validateFormat($format),
+            (int)$fontSize,
+            $fontFamily,
+            (int)$marginLeft,
+            (int)$marginRight,
+            (int)$marginTop,
+            (int)$marginBottom,
+            (int)$marginHeader,
+            (int)$marginFooter,
+            $this->validateOrientation($orientation));
+
+        $reflection = new \ReflectionClass('\mPDF');
+        $this->mpdf = $reflection->newInstanceArgs($constructorArgs);
     }
 
+
     /**
-     * Sets the default document font size in points (pt)
-     *
-     * @param $fontSize
+     * @return object
      */
-    public function setFontSize($fontSize)
+    public function getMpdf()
     {
-        $this->fontSize = (int)$fontSize;
+        return $this->mpdf;
     }
 
     /**
-     * Sets page left margin for document in millimeters
+     * @param       $html
+     * @param array $argOptions
      *
-     * @param $margin
+     * @return mixed
      */
-    public function setMarginLeft($margin)
+    public function generatePDF($html, $argOptions = array())
     {
-        $this->marginLeft = (int)$margin;
+        $defaultOptions = array(
+            'outputFilename'    => '',
+            'outputDestination' => 'S',
+        );
+
+        $options = array_merge($defaultOptions, $argOptions);
+        $this->mpdf->WriteHTML($html);
+
+        return $this->mpdf->Output($options['outputFilename'], $options['outputDestination']);
     }
 
     /**
-     * Sets page right margin for document in millimeters
+     * @param       $html
+     * @param array $args
      *
-     * @param $margin
+     * @return Response
      */
-    public function setMarginRight($margin)
+    public function generatePDFResponseFromHTML($html, array $args = array())
     {
-        $this->marginRight = (int)$margin;
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/pdf');
+
+        $response->setContent(
+            $this->generatePDF($html, $args)
+        );
+
+        return $response;
     }
 
     /**
-     * Sets page top margin for document in millimeters
+     * @param $format
      *
-     * @param $margin
+     * @return array|string
      */
-    public function setMarginTop($margin)
+    private function validateFormat($format)
     {
-        $this->marginTop = (int)$margin;
+        if (is_array($format) && count($format) == 2) {
+            $validatedFormat = array();
+            foreach ($format as $length) {
+                $validatedFormat[] = (float)$length;
+            }
+
+            return $validatedFormat;
+        }
+        if (in_array(strtoupper($format), $this->getAcceptedFormats())) {
+            return $format;
+        }
+
+        return 'A4';
     }
 
     /**
-     * Sets page bottom margin for document in millimeters
-     *
-     * @param $margin
-     */
-    public function setMarginBottom($margin)
-    {
-        $this->marginBottom = (int)$margin;
-    }
-
-    /**
-     * Sets page header margin for document in millimeters
-     *
-     * @param $margin
-     */
-    public function setMarginHeader($margin)
-    {
-        $this->marginHeader = (int)$margin;
-    }
-
-    /**
-     * Sets page footer margin for document in millimeters
-     *
-     * @param $margin
-     */
-    public function setMarginFooter($margin)
-    {
-        $this->marginFooter = (int)$margin;
-    }
-
-    /**
-     * Set page orientation for document
+     * Validate page orientation for document
      *
      * @param $orientation
+     *
+     * @return string
      */
-    public function setOrientation($orientation)
+
+    private function validateOrientation($orientation)
     {
         if (in_array(strtoupper($orientation), array('P', 'L'))) {
-            $this->orientation = $orientation;
+            return $orientation;
         }
-    }
 
-    public function setHTMLHeader($html)
-    {
-
-    }
-
-    public function setHTMLFooter($html)
-    {
-
-    }
-
-    public function createMpdfInstance()
-    {
-
+        return 'P';
     }
 
     /**
