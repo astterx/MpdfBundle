@@ -9,7 +9,7 @@ class MpdfService
     private $mpdf;
 
     /**
-     * MpdfService constructor.
+     * Create new mPDF instance.
      *
      * $mpdf = new mPDF(
      * '',  mode - default ''
@@ -38,7 +38,7 @@ class MpdfService
      * @param string $orientation
      */
 
-    public function __construct(
+    public function createMpdfInstance(
         $format = 'A4',
         $fontSize = 0,
         $fontFamily = '',
@@ -89,6 +89,10 @@ class MpdfService
      */
     public function generatePDF($html, $argOptions = array())
     {
+	if(null == $this->mpdf) {
+	    $this->createMpdfInstance();
+	}
+
         $defaultOptions = array(
             'outputFilename'    => '',
             'outputDestination' => 'S',
