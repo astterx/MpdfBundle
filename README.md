@@ -29,7 +29,7 @@ $mpdfService = $this->get('vel.mpdf');
 $html = '<h2>Hello world</h2>';
 $respose = $mpdfService->generatePDFResponseFromHTML($html);
 ```
-#### Generate PDF content and keep it into a string variable
+#### Generate PDF content and store into a string variable
 ```
 $mpdfService = $this->get('vel.mpdf');
 $html = '<h2>Hello world</h2>';
@@ -63,3 +63,4 @@ If you would like to work with mPDF class itself, you can use a getMpdf method:
 $mpdfService = $this->get('vel.mpdf');
 $mPDF = $mpdfService->getMpdf();
 ```
+Read mPDF documentation for more options: http://mpdf1.com
