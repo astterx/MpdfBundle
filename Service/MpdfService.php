@@ -78,6 +78,9 @@ class MpdfService
      */
     public function getMpdf()
     {
+        if(null == $this->mpdf) {
+	    $this->createMpdfInstance();
+        }
         return $this->mpdf;
     }
 
@@ -89,19 +92,15 @@ class MpdfService
      */
     public function generatePDF($html, $argOptions = array())
     {
-	if(null == $this->mpdf) {
-	    $this->createMpdfInstance();
-	}
-
         $defaultOptions = array(
             'outputFilename'    => '',
             'outputDestination' => 'S',
         );
 
         $options = array_merge($defaultOptions, $argOptions);
-        $this->mpdf->WriteHTML($html);
+        $this->getMpdf()->WriteHTML($html);
 
-        return $this->mpdf->Output($options['outputFilename'], $options['outputDestination']);
+        return $this->getMpdf()->Output($options['outputFilename'], $options['outputDestination']);
     }
 
     /**
